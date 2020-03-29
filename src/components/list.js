@@ -1,11 +1,20 @@
 import React from "react";
-
-export default function List({ data }) {
+import { Link, useHistory } from "react-router-dom";
+export default function List({ data, loadData, ...props }) {
+  const history = useHistory();
+  const goToEdit = id => () => {
+    console.log("cool");
+    history.push(`/pokemon/${id}/edit`);
+  };
   return (
-    <ul>
+    <div>
       {data.map(pokemon => (
-        <li key={pokemon.id}>{pokemon.name.english}</li>
+        <div key={pokemon.id}>
+          <Link to={`/pokemon/${pokemon.id}`}>{pokemon.name.english}</Link>
+          <button onClick={goToEdit(pokemon.id)}>Edit</button>
+        </div>
       ))}
-    </ul>
+      <button onClick={loadData}>Show more pokemons</button>
+    </div>
   );
 }
