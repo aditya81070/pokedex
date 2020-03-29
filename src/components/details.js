@@ -1,5 +1,5 @@
-import React from "react";
-import { useParams } from "react-router-dom";
+import React from 'react';
+import { useParams, Link } from 'react-router-dom';
 
 export default function Details({ data }) {
   const { id } = useParams();
@@ -16,6 +16,12 @@ export default function Details({ data }) {
       </ul>
       <p>Attack Level: {pokemon.base.Attack}</p>
       <p>Defense Level: {pokemon.base.Defense}</p>
+      {pokemon.customAttrs &&
+        Object.keys(pokemon.customAttrs).map(attr => (
+          <p>
+            {attr}: {pokemon.customAttrs[attr]}
+          </p>
+        ))}
     </div>
   );
 }

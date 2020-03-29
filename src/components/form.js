@@ -57,9 +57,8 @@ const formInputs = [
   },
 ];
 
-class EditForm extends React.Component {
+class Create extends React.Component {
   state = {
-    id: '',
     name: '',
     type: '',
     hp: 0,
@@ -70,34 +69,6 @@ class EditForm extends React.Component {
     speed: 0,
     customAttrs: [],
   };
-
-  componentDidMount() {
-    const data = this.props.data;
-    console.log(data);
-    const id = this.props.match.params.id;
-    const pokemon = data.find(pokemon => pokemon.id === parseInt(id));
-    const { name, base, type, customAttrs, id: uid } = pokemon;
-    let customAttributes = [];
-    if (customAttrs) {
-      customAttributes = Object.keys(customAttrs).map(attrName => ({
-        attrName: attrName,
-        attrValue: customAttrs[attrName],
-      }));
-    }
-    this.setState({
-      id: uid,
-      name: name.english,
-      type: type.join(','),
-      hp: base.HP,
-      attack: base.Attack,
-      defense: base.Defense,
-      spAttack: base['Sp. Attack'],
-      spDefense: base['Sp. Defense'],
-      speed: base['Speed'],
-      customAttrs: customAttributes,
-    });
-  }
-
   addCustomAttr = () => {
     this.setState(prev => ({
       customAttrs: [
@@ -125,22 +96,11 @@ class EditForm extends React.Component {
 
   handleFormSubmit = e => {
     e.preventDefault();
-    const {
-      name,
-      type,
-      hp,
-      attack,
-      defense,
-      spAttack,
-      spDefense,
-      speed,
-      customAttrs,
-      id,
-    } = this.state;
+    const { name, type, hp, attack, defense, spAttack, spDefense, speed, customAttrs } = this.state;
     const customAttributes = {};
     customAttrs.forEach(({ attrName, attrValue }) => (customAttributes[attrName] = attrValue));
     const data = {
-      id,
+      id: this.props.length + 1,
       name: {
         english: name,
         japanese: name,
@@ -157,7 +117,7 @@ class EditForm extends React.Component {
       },
       customAttrs: customAttributes,
     };
-    this.props.updatePokemon(data);
+    this.props.addPokemon(data);
     this.props.history.push('/');
   };
 
@@ -210,4 +170,4 @@ class EditForm extends React.Component {
   }
 }
 
-export default withRouter(EditForm);
+export default withRouter(Create);

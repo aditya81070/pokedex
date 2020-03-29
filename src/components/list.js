@@ -1,9 +1,9 @@
-import React from "react";
-import { Link, useHistory } from "react-router-dom";
+import React from 'react';
+import { Link, useHistory } from 'react-router-dom';
 export default function List({ data, loadData, ...props }) {
   const history = useHistory();
   const goToEdit = id => () => {
-    console.log("cool");
+    console.log('cool');
     history.push(`/pokemon/${id}/edit`);
   };
   return (
