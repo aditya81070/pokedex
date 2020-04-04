@@ -9,5 +9,9 @@ router.get('/', (req, res) => {
 });
 
 router.route('/pokemons').get(controller.getPokemons).post(controller.addPokemon);
-router.route('/pokemons/:id').delete(controller.removePokemon).put(controller.updatePokemon);
+router
+  .route('/pokemons/:id')
+  .get(controller.findPokemon)
+  .delete(controller.removePokemon)
+  .put(controller.updatePokemon);
 module.exports = router;

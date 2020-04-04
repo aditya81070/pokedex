@@ -53,12 +53,6 @@ const addPokemon = (req, res) => {
 
 const updatePokemon = (req, res) => {
   const id = parseInt(req.params.id);
-  if (id <= 150) {
-    return res.status(400).json({
-      err: true,
-      message: 'Can not delete item',
-    });
-  }
   PokemonModel.findOneAndUpdate({ id: id }, req.body, { new: true })
     .then((data) => {
       if (!data) {
@@ -80,7 +74,14 @@ const updatePokemon = (req, res) => {
     });
 };
 const removePokemon = (req, res) => {
-  PokemonModel.findOneAndDelete({ id: req.params.id })
+  const id = parseInt(req.params.id);
+  if (id <= 150) {
+    return res.status(400).json({
+      err: true,
+      message: 'Can not delete item',
+    });
+  }
+  PokemonModel.findOneAndDelete({ id: id })
     .then((data) => {
       if (!data) {
         return res.status(404).json({
@@ -100,7 +101,34 @@ const removePokemon = (req, res) => {
       });
     });
 };
+
+const findPokemon = (req, res) => {
+  const id = parseInt(req.params.id);
+  PokemonModel.findOne(
+    { id: id },
+    { _id: 0, name: 1, type: 1, 'base.Attack': 1, 'base.Defense': 1, customProps: 1 },
+  )
+    .then((data) => {
+      if (!data) {
+        return res.status(404).json({
+          err: true,
+          message: 'pokemon details not found',
+        });
+      }
+      return res.status(200).json({
+        err: false,
+        data,
+      });
+    })
+    .catch((err) => {
+      res.json({
+        err: true,
+        message: err,
+      });
+    });
+};
 module.exports.getPokemons = getPokemons;
 module.exports.addPokemon = addPokemon;
 module.exports.removePokemon = removePokemon;
 module.exports.updatePokemon = updatePokemon;
+module.exports.findPokemon = findPokemon;
