@@ -1,4 +1,5 @@
 let router = require('express').Router();
+const controller = require('./controllers/pokemonController');
 
 router.get('/', (req, res) => {
   res.json({
@@ -7,4 +8,6 @@ router.get('/', (req, res) => {
   });
 });
 
+router.route('/pokemons').get(controller.getPokemons).post(controller.addPokemon);
+router.route('/pokemons/:id').delete(controller.removePokemon).put(controller.updatePokemon);
 module.exports = router;

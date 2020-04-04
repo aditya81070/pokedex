@@ -5,9 +5,11 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const cors = require('cors');
 const apiRoutes = require('./api-routes');
 const app = express();
 
+app.use(cors());
 app.use(
   bodyParser.urlencoded({
     extended: true,
@@ -17,7 +19,10 @@ app.use(
 app.use(bodyParser.json());
 app.use('/api', apiRoutes);
 
-mongoose.connect('mongodb://localhost/api', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect('mongodb://localhost:27017/pokedex', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 const db = mongoose.connection;
 if (!db) {
   console.error('Cannot connect to db');
