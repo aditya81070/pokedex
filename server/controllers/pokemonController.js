@@ -2,6 +2,7 @@ const PokemonModel = require('../models/pokemon');
 
 const getPokemons = (req, res) => {
   PokemonModel.find()
+    .sort({ id: 1 })
     .then((data) => {
       return res.status(200).json({
         err: false,
@@ -25,9 +26,13 @@ const addPokemon = (req, res) => {
     });
   }
   const newPokemon = new PokemonModel(req.body);
-  PokemonModel.estimatedDocumentCount()
-    .then((count) => {
-      newPokemon.id = count + 1;
+  PokemonModel.aggregate([
+    { $group: { _id: null, maxId: { $max: '$id' } } },
+    { $project: { _id: 0, maxId: 1 } },
+  ])
+    .then((docWithMaxId) => {
+      console.log(docWithMaxId);
+      newPokemon.id = docWithMaxId[0].maxId + 1;
       return newPokemon
         .save()
         .then((data) =>
@@ -104,10 +109,7 @@ const removePokemon = (req, res) => {
 
 const findPokemon = (req, res) => {
   const id = parseInt(req.params.id);
-  PokemonModel.findOne(
-    { id: id },
-    { _id: 0, name: 1, type: 1, 'base.Attack': 1, 'base.Defense': 1, customProps: 1 },
-  )
+  PokemonModel.findOne({ id: id })
     .then((data) => {
       if (!data) {
         return res.status(404).json({

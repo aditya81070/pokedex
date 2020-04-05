@@ -69,37 +69,48 @@ class EditForm extends React.Component {
     spDefense: 0,
     speed: 0,
     customAttrs: [],
+    loading: false,
   };
 
   componentDidMount() {
-    const data = this.props.data;
-    console.log(data);
     const id = this.props.match.params.id;
-    const pokemon = data.find(pokemon => pokemon.id === parseInt(id));
-    const { name, base, type, customAttrs, id: uid } = pokemon;
-    let customAttributes = [];
-    if (customAttrs) {
-      customAttributes = Object.keys(customAttrs).map(attrName => ({
-        attrName: attrName,
-        attrValue: customAttrs[attrName],
-      }));
-    }
-    this.setState({
-      id: uid,
-      name: name.english,
-      type: type.join(','),
-      hp: base.HP,
-      attack: base.Attack,
-      defense: base.Defense,
-      spAttack: base['Sp. Attack'],
-      spDefense: base['Sp. Defense'],
-      speed: base['Speed'],
-      customAttrs: customAttributes,
-    });
+    this.setState({ loading: true });
+    fetch(`${process.env.REACT_APP_API_URL}/pokemons/${id}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (!data.err) {
+          const pokemon = data.data;
+          const { name, base, type, customAttrs, id: uid } = pokemon;
+          let customAttributes = [];
+          if (customAttrs) {
+            customAttributes = Object.keys(customAttrs).map((attrName) => ({
+              attrName: attrName,
+              attrValue: customAttrs[attrName],
+            }));
+          }
+          this.setState({ loading: false });
+          this.setState({
+            id: uid,
+            name: name.english,
+            type: type.join(','),
+            hp: base.HP,
+            attack: base.Attack,
+            defense: base.Defense,
+            spAttack: base.SpAttack,
+            spDefense: base.SpDefense,
+            speed: base.Speed,
+            customAttrs: customAttributes,
+          });
+        }
+      })
+      .catch((err) => {
+        this.setState({ loading: false });
+        console.log(err);
+      });
   }
 
   addCustomAttr = () => {
-    this.setState(prev => ({
+    this.setState((prev) => ({
       customAttrs: [
         ...prev.customAttrs,
         {
@@ -109,21 +120,21 @@ class EditForm extends React.Component {
       ],
     }));
   };
-  handleCustomAttrChange = idx => e => {
+  handleCustomAttrChange = (idx) => (e) => {
     const { name, value } = e.target;
-    this.setState(prev => ({
+    this.setState((prev) => ({
       customAttrs: prev.customAttrs.map((attr, index) =>
         idx === index ? { ...attr, [name]: value } : attr,
       ),
     }));
   };
-  handleInputChange = e => {
+  handleInputChange = (e) => {
     this.setState({
       [e.target.name]: e.target.value,
     });
   };
 
-  handleFormSubmit = e => {
+  handleFormSubmit = (e) => {
     e.preventDefault();
     const {
       name,
@@ -151,19 +162,35 @@ class EditForm extends React.Component {
         HP: hp,
         Attack: attack,
         Defense: defense,
-        'Sp. Attack': spAttack,
-        'Sp. Defense': spDefense,
+        SpAttack: spAttack,
+        SpDefense: spDefense,
         Speed: speed,
       },
       customAttrs: customAttributes,
     };
-    this.props.updatePokemon(data);
-    this.props.history.push('/');
+    fetch(`${process.env.REACT_APP_API_URL}/pokemons/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (!data.err) {
+          this.props.history.push('/');
+        } else {
+          console.log(data.message);
+        }
+      })
+      .catch((err) => console.log(err));
   };
 
   render() {
     const { customAttrs } = this.state;
-    return (
+    return this.state.loading ? (
+      <p>Loading the form...</p>
+    ) : (
       <div>
         <form onSubmit={this.handleFormSubmit}>
           {formInputs.map(({ label, name, type, ...inputAttrs }) => (

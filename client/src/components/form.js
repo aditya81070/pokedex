@@ -70,7 +70,7 @@ class Create extends React.Component {
     customAttrs: [],
   };
   addCustomAttr = () => {
-    this.setState(prev => ({
+    this.setState((prev) => ({
       customAttrs: [
         ...prev.customAttrs,
         {
@@ -80,45 +80,60 @@ class Create extends React.Component {
       ],
     }));
   };
-  handleCustomAttrChange = idx => e => {
+  handleCustomAttrChange = (idx) => (e) => {
     const { name, value } = e.target;
-    this.setState(prev => ({
+    this.setState((prev) => ({
       customAttrs: prev.customAttrs.map((attr, index) =>
         idx === index ? { ...attr, [name]: value } : attr,
       ),
     }));
   };
-  handleInputChange = e => {
+  handleInputChange = (e) => {
     this.setState({
       [e.target.name]: e.target.value,
     });
   };
 
-  handleFormSubmit = e => {
+  handleFormSubmit = (e) => {
     e.preventDefault();
     const { name, type, hp, attack, defense, spAttack, spDefense, speed, customAttrs } = this.state;
     const customAttributes = {};
     customAttrs.forEach(({ attrName, attrValue }) => (customAttributes[attrName] = attrValue));
     const data = {
-      id: this.props.length + 1,
       name: {
         english: name,
         japanese: name,
         chinese: name,
       },
-      type: type.split(','),
+      type: type.split(',').filter((t) => String(t).trim()),
       base: {
         HP: hp,
         Attack: attack,
         Defense: defense,
-        'Sp. Attack': spAttack,
-        'Sp. Defense': spDefense,
+        SpAttack: spAttack,
+        SpDefense: spDefense,
         Speed: speed,
       },
       customAttrs: customAttributes,
     };
-    this.props.addPokemon(data);
-    this.props.history.push('/');
+    fetch(`${process.env.REACT_APP_API_URL}/pokemons`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (!data.err) {
+          this.props.history.push('/');
+        } else {
+          console.log('can not add item');
+        }
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
   };
 
   render() {
