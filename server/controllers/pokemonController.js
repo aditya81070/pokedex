@@ -3,6 +3,7 @@ const PokemonModel = require('../models/pokemon');
 const getPokemons = (req, res) => {
   PokemonModel.find()
     .sort({ _id: -1 })
+    .limit(20)
     .then((data) => {
       return res.status(200).json({
         err: false,

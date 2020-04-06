@@ -2,25 +2,20 @@ import React, { useState, useEffect } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import { makeStyles } from '@material-ui/core/styles';
 import PokemonDetail from './pokemon-detail';
 import LinearProgress from '@material-ui/core/LinearProgress';
-import { Link } from 'react-router-dom';
 import Wrapper from './wrapper';
-
-const useStyles = makeStyles((theme) => ({
-  headingContainer: {
-    padding: theme.spacing(2),
-    margin: theme.spacing(2, 0),
-  },
-}));
+import ListHeader from './list-header';
+import searchList from '../helpers/search-list';
 
 export default function PokemonList(props) {
   const [pokemonList, setPokemonList] = useState([]);
   const [loading, setLoading] = useState(false);
   const [expanded, setExpanded] = useState(false);
-  const classes = useStyles();
+  const [search, setSearch] = useState('');
 
+  const filteredList = searchList(pokemonList, search);
+  const currentList = search ? filteredList : pokemonList;
   useEffect(() => {
     setLoading(true);
     fetch(`${process.env.REACT_APP_API_URL}/pokemons`)
@@ -59,31 +54,16 @@ export default function PokemonList(props) {
         console.log(`err in req: ${err}`);
       });
   };
+
   if (loading) {
     return <LinearProgress />;
   }
+
   return (
     <Wrapper>
-      <Grid
-        container
-        justify='space-between'
-        direction='row'
-        alignItems='center'
-        className={classes.headingContainer}
-      >
-        <Grid item>
-          <Typography variant='h4' component='h1'>
-            All Pokemons
-          </Typography>
-        </Grid>
-        <Grid item>
-          <Button component={Link} to='/pokemon/add' variant='contained' color='primary'>
-            Add Pokemon
-          </Button>
-        </Grid>
-      </Grid>
-      {pokemonList.length > 0 ? (
-        pokemonList.map((pokemon) => (
+      <ListHeader list={filteredList} search={search} setSearch={setSearch} />
+      {currentList.length > 0 ? (
+        currentList.map((pokemon) => (
           <PokemonDetail
             data={pokemon}
             key={pokemon.id}

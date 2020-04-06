@@ -4,6 +4,7 @@ import Header from './header';
 import PokemonList from './pokemonList';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Typography from '@material-ui/core/Typography';
+
 const searchList = (list = [], searchValue = '') => {
   const searchValueList = searchValue
     .split(' ')

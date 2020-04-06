@@ -128,7 +128,7 @@ export default function PokemonDetail(props) {
     onDelete();
   };
   return (
-    <ExpansionPanel expanded={id === expanded} onChange={onChange}>
+    <ExpansionPanel expanded={id === expanded} onChange={onChange} elevation={1}>
       <ExpansionPanelSummary
         expandIcon={<ExpandMoreIcon />}
         IconButtonProps={{
