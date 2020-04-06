@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-
+import Header from './header';
+import PokemonList from './pokemonList';
+import LinearProgress from '@material-ui/core/LinearProgress';
+import Typography from '@material-ui/core/Typography';
 const searchList = (list = [], searchValue = '') => {
   const searchValueList = searchValue
     .split(' ')
@@ -38,23 +41,22 @@ export default function List(props) {
   const filteredList = searchList(data, searchValue);
   return (
     <div>
-      <input
+      <Header />
+      {/* <input
         placeholder='enter name or type of pokemon'
         value={searchValue}
         onChange={handleSearchChange}
       />
       <ul>
         {searchValue && filteredList.map((item) => <li key={item.id}>{item.name.english}</li>)}
-      </ul>
+      </ul> */}
       {data.length > 0 ? (
-        data.map((pokemon) => (
-          <div key={pokemon.id}>
-            <Link to={`/pokemon/${pokemon.id}`}>{pokemon.name.english}</Link>
-            <button onClick={goToEdit(pokemon.id)}>Edit</button>
-          </div>
-        ))
+        <PokemonList pokemons={data} />
       ) : (
-        <p>Loading the pokemon list...</p>
+        <>
+          <LinearProgress color='secondary' />
+          <Typography variant='body1'>Loading pokemon list...</Typography>
+        </>
       )}
     </div>
   );
