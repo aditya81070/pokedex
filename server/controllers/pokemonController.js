@@ -2,7 +2,7 @@ const PokemonModel = require('../models/pokemon');
 
 const getPokemons = (req, res) => {
   PokemonModel.find()
-    .sort({ id: 1 })
+    .sort({ _id: -1 })
     .then((data) => {
       return res.status(200).json({
         err: false,

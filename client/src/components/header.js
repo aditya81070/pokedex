@@ -20,11 +20,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ButtonAppBar() {
+export default function Header() {
   const classes = useStyles();
   return (
     <AppBar position='static'>
-      <Toolbar>
+      <Toolbar variant='dense'>
         <Link to='/'>
           <img src={Logo} alt='Pokedex app logo' className={classes.logo} />
         </Link>

@@ -32,7 +32,9 @@ const useStyles = makeStyles((theme) => ({
   },
   chip: {
     marginLeft: theme.spacing(1),
-    marginTop: theme.spacing(1),
+    '&:first-of-type': {
+      marginLeft: '0px',
+    },
   },
   chipContainer: {
     width: 'calc(100% - 200px)',

@@ -13,7 +13,7 @@ const pokemonSchema = new mongoose.Schema({
     required: true,
   },
   base: baseSchema,
-  customProps: {},
+  customAttrs: {},
 });
 
 const Pokemon = mongoose.model('pokemon', pokemonSchema);

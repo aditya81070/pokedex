@@ -6,6 +6,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import PokemonDetail from './pokemon-detail';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { Link } from 'react-router-dom';
+import Wrapper from './wrapper';
 
 const useStyles = makeStyles((theme) => ({
   headingContainer: {
@@ -62,7 +63,7 @@ export default function PokemonList(props) {
     return <LinearProgress />;
   }
   return (
-    <div>
+    <Wrapper>
       <Grid
         container
         justify='space-between'
@@ -94,6 +95,6 @@ export default function PokemonList(props) {
       ) : (
         <Typography>No Pokemons to display.</Typography>
       )}
-    </div>
+    </Wrapper>
   );
 }
