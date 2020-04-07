@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
     height: '30px',
   },
 }));
-const ListHeader = ({ list = [], search, setSearch }) => {
+const ListHeader = ({ list = [] }) => {
   const classes = useStyles();
   return (
     <Grid container alignItems='center' justify='space-between' className={classes.root}>
@@ -29,7 +29,7 @@ const ListHeader = ({ list = [], search, setSearch }) => {
       <Grid item>
         <Grid container spacing={2} alignItems='center'>
           <Grid item>
-            <AutoCompleteSearch list={list} search={search} setSearch={setSearch} />
+            <AutoCompleteSearch list={list} />
           </Grid>
           <Grid item>
             <Button

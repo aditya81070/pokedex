@@ -3,56 +3,57 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import SearchIcon from '@material-ui/icons/SearchOutlined';
 import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/core/styles';
-
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import ListSubheader from '@material-ui/core/ListSubheader';
+import searchList from '../helpers/search-list';
+import classnames from 'classnames';
+import { useHistory } from 'react-router-dom';
 const useStyles = makeStyles((theme) => ({
   input: {
     height: '30px',
   },
-  activeClass: {
-    color: 'red',
+  root: {
+    position: 'relative',
+  },
+  filteredList: {
+    padding: 0,
+    maxHeight: '200px',
+    overflow: 'auto',
+    position: 'absolute',
+    zIndex: 1,
+    left: 0,
+    width: '400px',
+    top: '40px',
+    background: theme.palette.background.default,
+    border: `1px solid ${theme.palette.divider}`,
+    boxShadow: theme.shadows[1],
+  },
+  noData: {
+    padding: theme.spacing(2),
+    textAlign: 'center',
   },
 }));
 
-const AutoCompleteSearch = ({ list, search, setSearch }) => {
-  const [active, setActive] = useState(0);
-  const [showSuggestions, setShowSuggestions] = useState(false);
+const AutoCompleteSearch = ({ list }) => {
+  const [search, setSearch] = useState('');
+  const history = useHistory();
+  const filteredList = searchList(list, search);
   const classes = useStyles();
 
   const handleSearchChange = (e) => {
     const userInput = e.target.value;
     setSearch(userInput);
-    setActive(0);
-    setShowSuggestions(true);
   };
 
-  const handleItemClick = (e) => {
-    setSearch(e.currentTarget.innerText);
-    setActive(0);
-    setShowSuggestions(false);
-  };
-
-  const handleKeyDown = (e) => {
-    if (e.keyCode === 13) {
-      setSearch(list[active].name.english);
-      setShowSuggestions(false);
-      setActive(0);
-    } else if (e.keyCode === 38) {
-      if (active === 0) {
-        setActive(list.length - 1);
-        return;
-      }
-      setActive((prevActive) => prevActive - 1);
-    } else if (e.keyCode === 40) {
-      if (active === list.length - 1) {
-        setActive(0);
-        return;
-      }
-      setActive((prevActive) => prevActive + 1);
-    }
+  const handleItemClick = (id) => () => {
+    history.push(`/pokemon/${id}`);
   };
 
   return (
-    <div>
+    <div className={classes.root}>
       <TextField
         variant='outlined'
         size='small'
@@ -60,7 +61,6 @@ const AutoCompleteSearch = ({ list, search, setSearch }) => {
         placeholder='Search by name or type'
         value={search}
         onChange={handleSearchChange}
-        onKeyDown={handleKeyDown}
         InputProps={{
           className: classes.input,
           startAdornment: (
@@ -70,21 +70,35 @@ const AutoCompleteSearch = ({ list, search, setSearch }) => {
           ),
         }}
       />
-      {showSuggestions && search ? (
-        list.length ? (
-          <ul>
-            {list.map((suggestion, idx) => (
-              <li
+      {search ? (
+        filteredList.length > 0 ? (
+          <List dense className={classes.filteredList}>
+            <ListSubheader>Pokemon name & type</ListSubheader>
+            {filteredList.map((suggestion, idx) => (
+              <ListItem
+                dense
+                divider
+                button
+                alignItems='flex-start'
                 key={suggestion.id}
-                onClick={handleItemClick}
-                className={active === idx ? classes.activeClass : ''}
+                onClick={handleItemClick(suggestion.id)}
               >
-                {suggestion.name.english}
-              </li>
+                <ListItemText>{suggestion.name.english}</ListItemText>
+                <ListItemSecondaryAction>
+                  {suggestion.type.map((t, idx) => (
+                    <span key={t}>
+                      {t}
+                      {idx < suggestion.type.length - 1 ? ',' : ''}
+                    </span>
+                  ))}
+                </ListItemSecondaryAction>
+              </ListItem>
             ))}
-          </ul>
+          </List>
         ) : (
-          <div>No Pokemon with current search</div>
+          <div className={classnames(classes.filteredList, classes.noData)}>
+            No Pokemon with current search
+          </div>
         )
       ) : null}
     </div>

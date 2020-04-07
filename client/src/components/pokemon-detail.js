@@ -7,9 +7,9 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
-import Chip from '@material-ui/core/Chip';
-import Divider from '@material-ui/core/Divider';
+
 import { useHistory } from 'react-router-dom';
+import DetailField from './detail-field';
 const useStyles = makeStyles((theme) => ({
   buttonContainer: {
     marginLeft: 'auto',
@@ -30,80 +30,13 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(2, 0),
     padding: theme.spacing(2),
   },
-  chip: {
-    marginLeft: theme.spacing(1),
-    '&:first-of-type': {
-      marginLeft: '0px',
-    },
-  },
-  chipContainer: {
-    width: 'calc(100% - 200px)',
-  },
-  titleContainer: {
-    width: '200px',
-  },
-  attrContainer: {
-    padding: theme.spacing(1, 0),
-  },
 }));
 
-const Pokemon = ({ type, base, englishName }) => {
+const Pokemon = ({ type, base, englishName, customAttrs }) => {
   const classes = useStyles();
   return (
     <Grid container justify='center' direction='column' className={classes.pokemonDetails}>
-      <Grid item container alignItems='center' className={classes.attrContainer}>
-        <Grid item className={classes.titleContainer}>
-          <Typography variant='h6' component='p'>
-            Name
-          </Typography>
-        </Grid>
-        <Grid item>
-          <Typography variant='h6' component='p'>
-            {englishName}
-          </Typography>
-        </Grid>
-      </Grid>
-      <Divider />
-      <Grid item container alignItems='center' className={classes.attrContainer}>
-        <Grid item className={classes.titleContainer}>
-          <Typography variant='h6' component='p'>
-            Types
-          </Typography>
-        </Grid>
-        <Grid item className={classes.chipContainer}>
-          {type.map((t) => (
-            <Chip key={t} variant='outlined' size='small' label={t} className={classes.chip} />
-          ))}
-        </Grid>
-      </Grid>
-      <Divider />
-
-      <Grid item container alignItems='center' className={classes.attrContainer}>
-        <Grid item className={classes.titleContainer}>
-          <Typography variant='h6' component='p'>
-            Attack
-          </Typography>
-        </Grid>
-        <Grid item>
-          <Typography variant='h6' component='p'>
-            {base.Attack}
-          </Typography>
-        </Grid>
-      </Grid>
-      <Divider />
-
-      <Grid item container alignItems='center' className={classes.attrContainer}>
-        <Grid item>
-          <Typography variant='h6' component='p' className={classes.titleContainer}>
-            Defense
-          </Typography>
-        </Grid>
-        <Grid item>
-          <Typography variant='h6' component='p'>
-            {base.Defense}
-          </Typography>
-        </Grid>
-      </Grid>
+      <DetailField name={englishName} base={base} customAttrs={customAttrs} type={type} />
     </Grid>
   );
 };
@@ -113,6 +46,7 @@ export default function PokemonDetail(props) {
     base,
     type,
     id,
+    customAttrs,
   } = props.data;
   const { expanded, onDelete, onChange } = props;
   const classes = useStyles();
@@ -150,7 +84,7 @@ export default function PokemonDetail(props) {
         </div>
       </ExpansionPanelSummary>
       <ExpansionPanelDetails className={classes.expDetails}>
-        <Pokemon englishName={nameEnglish} base={base} type={type} />
+        <Pokemon englishName={nameEnglish} base={base} type={type} customAttrs={customAttrs} />
       </ExpansionPanelDetails>
     </ExpansionPanel>
   );

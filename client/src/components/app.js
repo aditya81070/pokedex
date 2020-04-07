@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import PokemonList from './pokemon-list';
 import EditPokemon from './edit-pokemon';
 import AddPokemon from './add-pokemon';
+import DetailPage from './detail-page';
 
 dotenv.config();
 function App() {
@@ -14,7 +15,8 @@ function App() {
       <Switch>
         <Route path='/' exact component={PokemonList} />
         <Route path='/pokemon/add' component={AddPokemon} />
-        <Route path='/pokemon/:id/edit' component={EditPokemon} />>
+        <Route path='/pokemon/:id/edit' component={EditPokemon} />
+        <Route path='/pokemon/:id' component={DetailPage} />
       </Switch>
     </>
   );

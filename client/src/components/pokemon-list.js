@@ -1,21 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
 import PokemonDetail from './pokemon-detail';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Wrapper from './wrapper';
+import Button from '@material-ui/core/Button';
 import ListHeader from './list-header';
-import searchList from '../helpers/search-list';
+import Grid from '@material-ui/core/Grid';
+import { makeStyles } from '@material-ui/core/styles';
 
+const useStyles = makeStyles((theme) => ({
+  showMoreBtnContainer: {
+    margin: theme.spacing(2, 0),
+  },
+}));
 export default function PokemonList(props) {
   const [pokemonList, setPokemonList] = useState([]);
+  const [limitedList, setLimitedList] = useState([]);
   const [loading, setLoading] = useState(false);
   const [expanded, setExpanded] = useState(false);
-  const [search, setSearch] = useState('');
+  const classes = useStyles();
 
-  const filteredList = searchList(pokemonList, search);
-  const currentList = search ? filteredList : pokemonList;
   useEffect(() => {
     setLoading(true);
     fetch(`${process.env.REACT_APP_API_URL}/pokemons`)
@@ -24,6 +28,7 @@ export default function PokemonList(props) {
         setLoading(false);
         if (!data.err) {
           setPokemonList(data.data);
+          setLimitedList(data.data.slice(0, 20));
         } else {
           console.log('can not fetch data');
         }
@@ -38,6 +43,9 @@ export default function PokemonList(props) {
     setExpanded(isExpanded ? id : false);
   };
 
+  const handleShowMore = () => {
+    setLimitedList((prev) => pokemonList.slice(0, prev.length + 10));
+  };
   const handlePokemonDelete = (id) => () => {
     fetch(`${process.env.REACT_APP_API_URL}/pokemons/${id}`, {
       method: 'DELETE',
@@ -55,25 +63,34 @@ export default function PokemonList(props) {
       });
   };
 
-  if (loading) {
-    return <LinearProgress />;
-  }
-
   return (
     <Wrapper>
-      <ListHeader list={filteredList} search={search} setSearch={setSearch} />
-      {currentList.length > 0 ? (
-        currentList.map((pokemon) => (
-          <PokemonDetail
-            data={pokemon}
-            key={pokemon.id}
-            onChange={handlePokemonOpen(pokemon.id)}
-            onDelete={handlePokemonDelete(pokemon.id)}
-            expanded={expanded}
-          />
-        ))
+      {loading ? (
+        <LinearProgress color='secondary' />
       ) : (
-        <Typography>No Pokemons to display.</Typography>
+        <>
+          <ListHeader list={pokemonList} />
+          {limitedList.length > 0 ? (
+            limitedList.map((pokemon) => (
+              <PokemonDetail
+                data={pokemon}
+                key={pokemon.id}
+                onChange={handlePokemonOpen(pokemon.id)}
+                onDelete={handlePokemonDelete(pokemon.id)}
+                expanded={expanded}
+              />
+            ))
+          ) : (
+            <Grid container justify='center'>
+              <Typography>No Pokemons to display.</Typography>
+            </Grid>
+          )}
+          <Grid container justify='center' className={classes.showMoreBtnContainer}>
+            <Button variant='outlined' onClick={handleShowMore}>
+              Show more Pokemons
+            </Button>
+          </Grid>
+        </>
       )}
     </Wrapper>
   );
