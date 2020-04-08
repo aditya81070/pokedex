@@ -21,7 +21,7 @@ This application helps you to find out the information about a pokemon. You can 
 3. Import data in your local mongo database
    ```bash
     # Please make sure that `mongod` is running locally with port :27017
-    $ mongoimport --db=pokdex --collection=pokemons --file=./db/pokemons.json
+    $ mongoimport --db=pokdex --collection=pokemons --file=./db/pokedex.json
    ```
 4. Install the dependencies
    1. Client (front-end)
