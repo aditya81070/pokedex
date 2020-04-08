@@ -23,9 +23,8 @@ This application helps you to find out the information about a pokemon. You can 
     # Please make sure that `mongod` is running locally with port :27017
     $ mongoimport --db=pokdex --collection=pokemons --file=./db/pokedex.json
    ```
-4. Create a `.env` file and copy content from `.env.sample`.
-5. Install the dependencies
-   1. Client (front-end)
+4. Install the dependencies
+   1. Client (front-end): Crate `.env` file in `client` folder and paste content from `.env.sample` in it.
       ```bash
       $ cd client
       $ yarn #if you don't have `yarn`, use `npm install`
@@ -40,4 +39,4 @@ This application helps you to find out the information about a pokemon. You can 
       $ npm install
       $ npm start
       ```
-6. Open [local server](http://localhost:3000) in your favorite browser.
+5. Open [local server](http://localhost:3000) in your favorite browser.
