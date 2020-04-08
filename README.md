@@ -27,6 +27,7 @@ This application helps you to find out the information about a pokemon. You can 
    1. Client (front-end): Crate `.env` file in `client` folder and paste content from `.env.sample` in it.
       ```bash
       $ cd client
+      $ cp .env.sample .env
       $ yarn #if you don't have `yarn`, use `npm install`
       # start client sever
       $ yarn start #with npm use `npm start`
